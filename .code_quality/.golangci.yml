@@ -1,0 +1,40 @@
+run:
+  tests: false
+  timeout: 5m
+
+linters-settings:
+  gocritic:
+    enabled-tags:
+      - diagnostic
+    disabled-tags:
+      - performance
+      - style
+  golint:
+    min-confidence: 0
+  misspell:
+    locale: US
+  whitespace:
+    multi-if: true
+    multi-func: true
+  gomodguard:
+    list-type: blacklist
+    blocked:
+      modules:
+        - github.com/newrelic/go-agent:
+            reason: "Use github.com/newrelic/go-agent/v3 module instead"
+
+linters:
+  disable-all: true
+  enable:
+    - bodyclose
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unparam
+    - unused
+    - varcheck
