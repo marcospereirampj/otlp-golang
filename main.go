@@ -9,12 +9,20 @@ const portNum string = ":8080"
 
 func main() {
 	log.Println("Starting http server.")
-
-	http.HandleFunc("/info", info)
-
 	log.Println("Started on port", portNum)
-	err := http.ListenAndServe(":8080", nil)
+
+	mux := http.NewServeMux()
+
+	mux.HandleFunc("/info", info)
+
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+
+	err := srv.ListenAndServe()
 	if err != nil {
 		log.Println("Fail start http server.")
 	}
+
 }
