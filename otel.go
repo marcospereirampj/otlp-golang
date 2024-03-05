@@ -7,14 +7,27 @@ import (
 	"go.opentelemetry.io/otel/sdk/metric"
 	"go.opentelemetry.io/otel/sdk/trace"
 	"time"
+
+	mexporter "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/metric"
+	texporter "github.com/GoogleCloudPlatform/opentelemetry-operations-go/exporter/trace"
 )
 
+//nolint:all
 func newTraceExporter() (trace.SpanExporter, error) {
 	return stdouttrace.New(stdouttrace.WithPrettyPrint())
 }
 
+//nolint:all
 func newMetricExporter() (metric.Exporter, error) {
 	return stdoutmetric.New()
+}
+
+func newMetricGoogleExporter(projectID string) (metric.Exporter, error) {
+	return mexporter.New(mexporter.WithProjectID(projectID))
+}
+
+func newTraceGoogleExporter(projectID string) (trace.SpanExporter, error) {
+	return texporter.New(texporter.WithProjectID(projectID))
 }
 
 func newTraceProvider(traceExporter trace.SpanExporter) *trace.TracerProvider {

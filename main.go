@@ -13,29 +13,33 @@ const portNum string = ":8080"
 func main() {
 	log.Println("Starting http server.")
 
+	projectID := "otel-golang"
+
 	mux := http.NewServeMux()
 	ctx := context.Background()
 
 	prop := newPropagator()
 	otel.SetTextMapPropagator(prop)
 
-	consoleTraceExporter, err := newTraceExporter()
+	//consoleTraceExporter, err := newTraceExporter()
+	googleTraceExporter, err := newTraceGoogleExporter(projectID)
 	if err != nil {
 		log.Println("Failed get console exporter (trace).")
 	}
 
-	consoleMetricExporter, err := newMetricExporter()
+	//consoleMetricExporter, err := newMetricExporter()
+	googleMetricExporter, err := newMetricGoogleExporter(projectID)
 	if err != nil {
-		log.Println("Failed get console exporter (metric).")
+		log.Println("Failed get google exporter (metric).")
 	}
 
-	tracerProvider := newTraceProvider(consoleTraceExporter)
+	tracerProvider := newTraceProvider(googleTraceExporter)
 
 	//nolint:errcheck
 	defer tracerProvider.Shutdown(ctx)
 	otel.SetTracerProvider(tracerProvider)
 
-	meterProvider := newMeterProvider(consoleMetricExporter)
+	meterProvider := newMeterProvider(googleMetricExporter)
 
 	//nolint:errcheck
 	defer meterProvider.Shutdown(ctx)
